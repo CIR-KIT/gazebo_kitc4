@@ -8,13 +8,13 @@
   <property name="chassis_mass" value="2.788"/>
   <property name="hub_dia" value="0.09652"/>
 
-  <property name="front_tire_dia" value="0.1"/>
+  <property name="front_tire_dia" value="0.2"/>
   <property name="front_tire_width" value="0.02"/>
-  <property name="rear_tire_dia" value="0.075"/>
+  <property name="rear_tire_dia" value="0.1"/>
   <property name="rear_tire_width" value="0.02"/>
 
   <property name="hex_hub_depth" value="0.01445"/>
-  <property name="wheel_mass" value="0.29"/>
+  <property name="wheel_mass" value="1.00"/>
   <property name="wheelbase" value="0.335"/>
   <property name="hex_hub_dist" value="0.365"/>
   <property name="axle_length" value="0.03"/>

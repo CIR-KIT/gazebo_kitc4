@@ -28,6 +28,8 @@
     </inertial>
   </link>
 
+
+
   <link name="front_right_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0 "/>
@@ -46,6 +48,7 @@
         inner_rad="${hub_dia / 2}" outer_rad="${front_tire_dia / 2}"
         height="${front_tire_width}" mass="${wheel_mass}"/>
   </link>
+
 
   <link name="front_left_wheel">
     <visual>
@@ -66,11 +69,12 @@
         height="${front_tire_width}" mass="${wheel_mass}"/>
   </link>
 
+
+
   <link name="rear_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0 "/>
       <geometry>
-	<!--box size="0.2 0.2 0.2"/-->
 	<cylinder radius="${rear_tire_dia / 2}" length="${rear_tire_width}"/>	
       </geometry>
       <material name="tire_mat"/>
@@ -79,7 +83,6 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0 "/>
       <geometry>
-	<!--box size="0.2 0.2 0.2"/-->
 	<cylinder radius="${rear_tire_dia / 2}" length="${rear_tire_width}"/>
       </geometry>
     </collision>
@@ -90,71 +93,171 @@
 
 
 
-
-
-
-  <link name="rear_wheel_axle_carrier">
+  <link name="rear_steering_link">
     <xacro:null_inertial/>
   </link>
 
-  <link name="front_right_wheel_axle_carrier">
+  <link name="right_steering_link">
     <xacro:null_inertial/>
   </link>
 
-  <link name="front_left_wheel_axle_carrier">
+  <link name="left_steering_link">
+    <xacro:null_inertial/>
+  </link>
+
+
+  <link name="rear_axle_carrier">
+    <xacro:null_inertial/>
+  </link>
+  
+  <link name="right_axle_carrier">
+    <xacro:null_inertial/>
+  </link>
+  
+  <link name="left_axle_carrier">
     <xacro:null_inertial/>
   </link>
 
 
 
 
-
-
-
-  <joint name="rear_wheel_axis1" type="fixed">
+  <joint name="rear_shock" type="fixed">
     <parent link="chassis"/>
-    <child link="rear_wheel_axle_carrier"/>
-    <origin xyz="-0.15 0 -0.075" rpy="0 ${degrees_90} 0"/>
+    <child link="rear_steering_link"/>
+    <origin xyz="-0.15 0 ${-1 * rear_tire_dia / 2}" rpy="0 ${degrees_90} 0"/>
   </joint>
 
-  <joint name="front_right_wheel_axis1" type="fixed">
+  <joint name="right_shock" type="fixed">
     <parent link="chassis"/>
-    <child link="front_right_wheel_axle_carrier"/>
-    <origin xyz="0 0.15 0" rpy="0 ${degrees_90} 0"/>
+    <child link="right_steering_link"/>
+    <origin xyz="0.1 0.15 0" rpy="0 ${degrees_90} 0"/>
   </joint>
 
-  <joint name="front_left_wheel_axis1" type="fixed">
+  <joint name="left_shock" type="fixed">
     <parent link="chassis"/>
-    <child link="front_left_wheel_axle_carrier"/>
-    <origin xyz="0 -0.15 0" rpy="0 ${degrees_90} 0"/>
+    <child link="left_steering_link"/>
+    <origin xyz="0.1 -0.15 0" rpy="0 ${degrees_90} 0"/>
   </joint>
 
 
 
 
 
-  <joint name="rear_wheel_axis2" type="revolute">
-    <parent link="rear_wheel_axle_carrier"/>
+  <joint name="rear_steering_joint" type="revolute">
+    <parent link="rear_steering_link"/>
+    <child link="rear_axle_carrier"/>
+    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="${-degrees_45}" upper="${degrees_45}"
+           effort="${servo_stall_torque}" velocity="${servo_no_load_speed}"/>
+  </joint>
+
+  <joint name="right_steering_joint" type="revolute">
+    <parent link="right_steering_link"/>
+    <child link="right_axle_carrer"/>
+    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="${-degrees_45}" upper="${degrees_45}"
+           effort="${servo_stall_torque}" velocity="${servo_no_load_speed}"/>
+  </joint>
+
+  <joint name="left_steering_joint" type="revolute">
+    <parent link="left_steering_link"/>
+    <child link="left_axle_carrier"/>
+    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="${-degrees_45}" upper="${degrees_45}"
+           effort="${servo_stall_torque}" velocity="${servo_no_load_speed}"/>
+  </joint>
+
+
+
+
+
+  <joint name="rear_axle" type="continuous">
+    <parent link="rear_axle_carrier"/>
     <child link="rear_wheel"/>
-    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
-    <axis rpy="1 0 0"/>
+    <origin rpy="${degrees_90} 0 0"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="${axle_eff_limit}" velocity="${axle_vel_limit}"/>
   </joint>
 
-  <joint name="front_right_wheel_axis2" type="revolute">
-    <parent link="front_right_wheel_axle_carrier"/>
+  <joint name="right_axle" type="continuous">
+    <parent link="right_axle_carrier"/>
     <child link="front_right_wheel"/>
-    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
-    <axis rpy="1 0 0"/>
+    <origin rpy="${degrees_90} 0 0"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="${axle_eff_limit}" velocity="${axle_vel_limit}"/>
   </joint>
 
-  <joint name="front_left_wheel_axis2" type="revolute">
-    <parent link="front_left_wheel_axle_carrier"/>
+  <joint name="left_axle" type="continuous">
+    <parent link="left_axle_carrier"/>
     <child link="front_left_wheel"/>
-    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
-    <axis rpy="1 0 0"/>
+    <origin rpy="${degrees_90} 0 0"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="${axle_eff_limit}" velocity="${axle_vel_limit}"/>
   </joint>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <transmission name="right_steering_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="right_steering_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="rear_steering_act">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="left_steering_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="left_steering_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="left_steering_act">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+
+  <transmission name="left_axle_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_axle">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_axle_act">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="right_axle_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_axle">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_axle_act">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+  </gazebo>
 
 </robot>
