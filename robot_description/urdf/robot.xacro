@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find robot_description)/urdf/robot_param.xacro" />
+  <xacro:include filename="$(find robot_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find robot_description)/urdf/robot_xacro.xacro" />
+
+  <!-- Chassis -->
+  <link name="chassis">
+    <visual>
+      <origin xyz="0 0 -0.005"/>
+      <geometry>
+        <box size="0.4 ${chassis_width} 0.01"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.005"/>
+      <geometry>
+        <box size="0.4 ${chassis_width} 0.01"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+       <mass value="1" />
+       <origin xyz="0 0 0" rpy="0 0 0"/>
+       <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+  </link>
+
+  <link name="front_right_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0 "/>
+      <geometry>
+	<cylinder radius="${front_tire_dia /2 }" length="${front_tire_width}"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0 "/>
+      <geometry>
+	<cylinder radius="${front_tire_dia /2 }" length="${front_tire_width}"/>
+      </geometry>
+    </collision>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${front_tire_dia / 2}"
+        height="${front_tire_width}" mass="${wheel_mass}"/>
+  </link>
+
+  <link name="front_left_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0 "/>
+      <geometry>
+	<cylinder radius="${front_tire_dia /2 }" length="${front_tire_width}"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0 "/>
+      <geometry>
+	<cylinder radius="${front_tire_dia / 2}" length="${front_tire_width}"/>
+      </geometry>
+    </collision>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${front_tire_dia / 2}"
+        height="${front_tire_width}" mass="${wheel_mass}"/>
+  </link>
+
+  <link name="rear_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0 "/>
+      <geometry>
+	<!--box size="0.2 0.2 0.2"/-->
+	<cylinder radius="${rear_tire_dia / 2}" length="${rear_tire_width}"/>	
+      </geometry>
+      <material name="tire_mat"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0 "/>
+      <geometry>
+	<!--box size="0.2 0.2 0.2"/-->
+	<cylinder radius="${rear_tire_dia / 2}" length="${rear_tire_width}"/>
+      </geometry>
+    </collision>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${rear_tire_dia / 2}"
+        height="${rear_tire_width}" mass="${wheel_mass}"/>
+  </link>
+
+
+
+
+
+
+  <link name="rear_wheel_axle_carrier">
+    <xacro:null_inertial/>
+  </link>
+
+  <link name="front_right_wheel_axle_carrier">
+    <xacro:null_inertial/>
+  </link>
+
+  <link name="front_left_wheel_axle_carrier">
+    <xacro:null_inertial/>
+  </link>
+
+
+
+
+
+
+
+  <joint name="rear_wheel_axis1" type="fixed">
+    <parent link="chassis"/>
+    <child link="rear_wheel_axle_carrier"/>
+    <origin xyz="-0.15 0 -0.075" rpy="0 ${degrees_90} 0"/>
+  </joint>
+
+  <joint name="front_right_wheel_axis1" type="fixed">
+    <parent link="chassis"/>
+    <child link="front_right_wheel_axle_carrier"/>
+    <origin xyz="0 0.15 0" rpy="0 ${degrees_90} 0"/>
+  </joint>
+
+  <joint name="front_left_wheel_axis1" type="fixed">
+    <parent link="chassis"/>
+    <child link="front_left_wheel_axle_carrier"/>
+    <origin xyz="0 -0.15 0" rpy="0 ${degrees_90} 0"/>
+  </joint>
+
+
+
+
+
+  <joint name="rear_wheel_axis2" type="revolute">
+    <parent link="rear_wheel_axle_carrier"/>
+    <child link="rear_wheel"/>
+    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
+    <axis rpy="1 0 0"/>
+    <limit effort="${axle_eff_limit}" velocity="${axle_vel_limit}"/>
+  </joint>
+
+  <joint name="front_right_wheel_axis2" type="revolute">
+    <parent link="front_right_wheel_axle_carrier"/>
+    <child link="front_right_wheel"/>
+    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
+    <axis rpy="1 0 0"/>
+    <limit effort="${axle_eff_limit}" velocity="${axle_vel_limit}"/>
+  </joint>
+
+  <joint name="front_left_wheel_axis2" type="revolute">
+    <parent link="front_left_wheel_axle_carrier"/>
+    <child link="front_left_wheel"/>
+    <origin rpy="0 ${degrees_90} ${degrees_90}"/>
+    <axis rpy="1 0 0"/>
+    <limit effort="${axle_eff_limit}" velocity="${axle_vel_limit}"/>
+  </joint>
+
+</robot>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<robot>
+  <macro name="null_inertial">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </macro>
+
+  <!-- Inertia of a solid cuboid. Width is measured along the x axis, depth
+       along the y axis, and height along the z axis. -->
+  <macro name="solid_cuboid_inertial"
+               params="width depth height mass *origin">
+    <inertial>
+      <insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia ixx="${mass * (depth * depth + height * height) / 12}"
+               ixy="0" ixz="0"
+               iyy="${mass * (width * width + height * height) / 12}"
+               iyz="0"
+               izz="${mass * (width * width + depth * depth) / 12}"/>
+    </inertial>
+  </macro>
+
+
+  <macro name="thick_walled_tube_inertial"
+               params="inner_rad outer_rad height mass">
+    <inertial>
+      <mass value="${mass}"/>
+      <inertia ixx="${(1 / 12) * mass * (3 * (inner_rad * inner_rad +
+                    outer_rad * outer_rad) + height * height)}"
+               ixy="0" ixz="0"
+               iyy="${(1 / 12) * mass * (3 * (inner_rad * inner_rad +
+                    outer_rad * outer_rad) + height * height)}"
+               iyz="0"
+               izz="${mass * (inner_rad * inner_rad +
+                    outer_rad * outer_rad) / 2}"/>
+    </inertial>
+  </macro>
+</robot>
